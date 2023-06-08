@@ -18,7 +18,7 @@ describe('quiz.nextStageAsync()', function () {
     let saveInstance;
     let instanceBefore;
 
-    beforeEach(function() {
+    beforeEach(function () {
         instanceBefore = {
             status: 'awaiting-players',
             questionNumber: 1,
@@ -53,7 +53,7 @@ describe('quiz.nextStageAsync()', function () {
         saveInstance = sinon.stub(db, 'saveInstance');
     });
 
-    describe('when currently awaiting players', function() {
+    describe('when currently awaiting players', function () {
         it('should move to showing first question when enough players', async function () {
             instanceBefore.players = [
                 { name: 'Player 1' },
@@ -71,17 +71,28 @@ describe('quiz.nextStageAsync()', function () {
             expect(saveInstance.calledOnce).to.be.true;
             const instance = saveInstance.firstCall.args[0];
             expect(instance.players.map(p => p.score)).to.have.members([0, 0, 0]);
-        });    
+        });
 
         it('should reject request if no players yet', async function () {
-            instanceBefore.players = [ ]; // No players yet
+            instanceBefore.players = []; // No players yet
             await expect(quiz.nextStageAsync('1234')).to.eventually.be.rejectedWith('Not enough players yet');
             expect(saveInstance.notCalled).to.be.true;
         });
+
+        it('should reject request if only one player', async function () {
+
+            instanceBefore.players = [{ name: "Player 1" }]; // One players
+
+            await expect(quiz.nextStageAsync('1234')).to.eventually.be.rejectedWith('Not enough players yet');
+
+            expect(saveInstance.notCalled).to.be.true;
+
+        });
+
     });
 
-    describe('when showing question', function() {
-        beforeEach(function() {
+    describe('when showing question', function () {
+        beforeEach(function () {
             instanceBefore.status = 'showing-question';
             instanceBefore.questionNumber = 1;
             instanceBefore.players = [
@@ -145,8 +156,8 @@ describe('quiz.nextStageAsync()', function () {
         });
     });
 
-    describe('when showing answer', function() {
-        beforeEach(function() {
+    describe('when showing answer', function () {
+        beforeEach(function () {
             instanceBefore.status = 'showing-answer';
             instanceBefore.questionNumber = 1;
             instanceBefore.players = [
@@ -165,8 +176,8 @@ describe('quiz.nextStageAsync()', function () {
         });
     });
 
-    describe('when showing scores', function() {
-        beforeEach(function() {
+    describe('when showing scores', function () {
+        beforeEach(function () {
             instanceBefore.status = 'showing-scores';
             instanceBefore.questionNumber = 1;
             instanceBefore.players = [
