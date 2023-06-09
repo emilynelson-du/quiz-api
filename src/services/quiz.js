@@ -1,9 +1,7 @@
 const db = require('./db');
 const _ = require('underscore');
 const { ValidationError, NotFoundError, InvalidOperationError } = require('./errors');
-const cors = require('cors')
-const express = require('express')
-const app = express()
+
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
