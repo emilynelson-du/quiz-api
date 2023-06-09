@@ -1,6 +1,16 @@
 const db = require('./db');
 const _ = require('underscore');
 const { ValidationError, NotFoundError, InvalidOperationError } = require('./errors');
+const cors = require('cors')
+const express = require('express')
+const app = express()
+
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 
 async function saveQuizAsync(quiz) {
     quiz.name = (quiz.name || '').trim();
